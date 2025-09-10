@@ -66,6 +66,7 @@ jobs:
       uses: microsoft/powerplatform-actions@v1
       with:
           version: latest
+          
     - name: Pack solution
       uses: microsoft/powerplatform-actions/pack-solution@v1
       with:
