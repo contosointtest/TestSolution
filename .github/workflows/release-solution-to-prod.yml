@@ -1,66 +1,124 @@
 name: release-solution-to-prod-reusable
-
+# Reusable workflow
+# convert solution to managed (using a build PowerPlatform environment for the conversion)
+# upload the solution to the GitHub artifacts and deploy to the PROD environment
 on:
-  workflow_call:  # Trigger manually
-  push:
-    branches:
-      - main           # Or your release branch
+  workflow_call:
+    inputs: 
+      #Do Not change these values
+      #Values are set by the caller
+      #caller sample: release-action-call.ymnl
+      solution_name:
+        description: 'The solution name.'
+        type: string
+        default: ALMLab       
+      solution_shipping_folder:
+        description: 'folder name for staging the exported solution *do not change*'        
+        type: string
+        default: out/ship/
+      solution_outbound_folder:
+        description: 'staging the unpacked solution folder before check-in *do not change*'
+        type: string
+        default: out/solutions/
+      solution_source_folder: 
+       description: 'folder name to be created and checked in *do not change*'
+       type: string
+       default: solutions/
+      solution_release_folder:
+       description: 'folder where the released binaries are going to be hosted *do not change*'
+       type: string
+       default: out/release
+      BUILD_ENVIRONMENT_URL:
+        description: 'Build environment url.'
+        type: string
+        required: true      
+      PRODUCTION_ENVIRONMENT_URL: 
+        description: 'Production environment url.'
+        type: string
+        required: true
+      CLIENT_ID: 
+        description: 'The client id'
+        type: string
+        required: true
+      TENANT_ID: 
+        description: 'The tenant id'
+        type: string
+        required: true
+    secrets:
+      envSecret:
+        description: 'The secret value for authentication using SPN'
+        required: true
 
 jobs:
-  release:
+  convert-to-managed:
     runs-on: windows-latest
+    # or you can say runs-on: ubuntu-latest
+    env:
+      RUNNER_DEBUG: 1
 
     steps:
-      # 1. Checkout your repo
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v2
+      with:
+        lfs: true
 
-      # 2. Install Power Platform CLI
-      - name: Install Power Platform CLI
-        uses: microsoft/powerplatform-actions@v1
-        with:
-          version: latest
+    - name: Pack solution
+      uses: microsoft/powerplatform-actions/pack-solution@v0
+      with:
+        solution-folder: ${{ inputs.solution_source_folder}}/${{ inputs.solution_name }}
+        solution-file: ${{ inputs.solution_outbound_folder}}/${{ inputs.solution_name }}.zip
+        solution-type: Unmanaged
 
-      # 3. Authenticate to Power Platform (Dev)
-      - name: Authenticate (Dev)
-        uses: microsoft/powerplatform-actions/authenticate@v1
-        with:
-          environment-url: ${{ inputs.BUILD_ENVIRONMENT_URL }}
-          app-id: ${{ inputs.CLIENT_ID }}
-          client-secret: ${{ secrets.envSecret }}
-          tenant-id: ${{ inputs.TENANT_ID }}
+    - name: Import solution as unmanaged to build env
+      uses: microsoft/powerplatform-actions/import-solution@v0
+      with:
+        environment-url: ${{inputs.BUILD_ENVIRONMENT_URL}}
+        app-id: ${{inputs.CLIENT_ID}}
+        client-secret: ${{ secrets.envSecret }}
+        tenant-id: ${{inputs.TENANT_ID}}
+        solution-file: ${{ inputs.solution_outbound_folder}}/${{ inputs.solution_name }}.zip
+        force-overwrite: true
+        publish-changes: true
 
-      # 4. Export Solution from Dev
-      - name: Export Solution from Dev
-        uses: microsoft/powerplatform-actions/export-solution@v1
-        with:
-          solution-name: Test
-          path: out/solutions
-          managed: false   # set true if you want managed solution
+    - name: Export solution as managed
+      uses: microsoft/powerplatform-actions/export-solution@v0
+      with:
+        environment-url: ${{inputs.BUILD_ENVIRONMENT_URL}}
+        app-id: ${{inputs.CLIENT_ID}}
+        client-secret: ${{ secrets.envSecret }} 
+        tenant-id: ${{inputs.TENANT_ID}}
+        solution-name: ${{ inputs.solution_name }}
+        managed: true
+        solution-output-file: ${{ inputs.solution_shipping_folder}}/${{ inputs.solution_name }}_managed.zip
 
-      # 5. Commit exported solution back to repo
-      - name: Commit solution to repo
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add out/solutions
-          git commit -m "Export solution from Dev"
-          git push
+    - name: Upload the ready to ship solution to GH artifact store
+      uses: actions/upload-artifact@v2
+      with:
+        name: managedSolutions
+        path: ${{ inputs.solution_shipping_folder}}/
 
-      # 6. Authenticate to Power Platform (Test/Prod)
-      - name: Authenticate (Test)
-        uses: microsoft/powerplatform-actions/authenticate@v1
-        with:
-          environment-url: ${{ inputs.PRODUCTION_ENVIRONMENT_URL}}
-          app-id: ${{ inputs.CLIENT_ID }}
-          client-secret: ${{ secrets.envSecret }}
-          tenant-id: ${{ inputs.TENANT_ID }}
+  release-to-staging:
+    needs: [ convert-to-managed ]
+    runs-on: windows-latest
+    env:
+      RUNNER_DEBUG: 1
 
-      # 7. Import solution into Test/Prod
-      - name: Import Solution into Test
-        uses: microsoft/powerplatform-actions/import-solution@v1
-        with:
-          environment-url: ${{ inputs.PRODUCTION_ENVIRONMENT_URL }}
-          path: out/solutions/${{ inputs.solution_name }}.zip
-          overwrite-unmanaged-customizations: true
-          publish-changes: true
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        lfs: true
+
+    - name: Fetch the ready to ship solution from GH artifact store
+      uses: actions/download-artifact@v2
+      with:
+        name: managedSolutions
+        path: ${{ inputs.solution_release_folder}}
+    - name: Import solution to prod env
+      uses: microsoft/powerplatform-actions/import-solution@v0
+      with:
+        environment-url: ${{inputs.PRODUCTION_ENVIRONMENT_URL}}
+        app-id: ${{inputs.CLIENT_ID}}
+        client-secret: ${{ secrets.envSecret }}
+        tenant-id: ${{inputs.TENANT_ID}}
+        solution-file: ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}_managed.zip
+        force-overwrite: true
+        publish-changes: true
