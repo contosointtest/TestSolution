@@ -106,12 +106,16 @@ jobs:
     - uses: actions/checkout@v4
       with:
         lfs: true
-
+        
+    - name: Install Power Platform Tools
+      uses: microsoft/powerplatform-actions/actions-install@v1
+      
     - name: Fetch the ready to ship solution from GH artifact store
       uses: actions/download-artifact@v4
       with:
         name: managedSolutions
         path: ${{ inputs.solution_release_folder}}
+        
     - name: Import solution to prod env
       uses: microsoft/powerplatform-actions/import-solution@v0
       with:
