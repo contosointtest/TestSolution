@@ -15,7 +15,11 @@ on:
       solution_release_folder:
        description: 'folder where the released binaries are going to be hosted *do not change*'
        type: string
-       default: TestSolution/solutions/Test
+       default: solutions/Test
+      solution_file:
+        description: 'Solution zip file name'
+        required: true
+        default: Test_1_0_0_1_managed.zip
       
     
 env:
@@ -60,9 +64,9 @@ jobs:
         app-id: ${{env.CLIENT_ID}}
         client-secret: ${{ secrets.PowerPlatformSPN }}
         tenant-id: ${{env.TENANT_ID}}
-        solution-file: solutions/Test/Test_1_0_0_1_managed.zip
+        solution-file: ${{ github.event.inputs.solution_release_folder }}/${{ github.event.inputs.solution_file }}
         UseDeploymentSettingsFile: true
-        deployment-settings-file: solutions/Test/DeploymentSettings.json
+        deployment-settings-file: ${{ github.event.inputs.solution_release_folder }}/DeploymentSettings.json
         force-overwrite: true
         publish-changes: true
         repo-token: ${{ secrets.GITHUB_TOKEN }}
