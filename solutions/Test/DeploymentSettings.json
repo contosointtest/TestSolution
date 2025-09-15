@@ -1,0 +1,23 @@
+{
+  "EnvironmentVariables": [
+    {
+      "SchemaName": "mic_TestEnv",
+      "Value": "MTest1Val",
+      "Name": {
+        "Default": "TestEnv",
+        "ByLcid": {
+          "1033": "TestEnv"
+        }
+      },
+      "TypeId": 100000000,
+      "IsRequired": false
+    }
+  ],
+  "ConnectionReferences": [
+    {
+      "LogicalName": "mic_DataverseSPN",
+      "ConnectionId": "shared-commondataservice-3c5e482683694a72bce8ef4a60115d88",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_commondataservice"
+    }
+  ]
+}
