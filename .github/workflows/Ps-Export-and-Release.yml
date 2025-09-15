@@ -11,39 +11,12 @@ on:
       solution_name:
         description: 'The solution name.'
         type: string
-        default: ALMLab       
-      solution_shipping_folder:
-        description: 'folder name for staging the exported solution *do not change*'        
-        type: string
-        default: out/ship/
-      solution_outbound_folder:
-        description: 'staging the unpacked solution folder before check-in *do not change*'
-        type: string
-        default: out/solutions/
-      solution_source_folder: 
-       description: 'folder name to be created and checked in *do not change*'
-       type: string
-       default: solutions/
+        default: Test
       solution_release_folder:
        description: 'folder where the released binaries are going to be hosted *do not change*'
        type: string
        default: TestSolution/solutions/Test
-      BUILD_ENVIRONMENT_URL:
-        description: 'Build environment url.'
-        type: string
-        required: true      
-      PRODUCTION_ENVIRONMENT_URL: 
-        description: 'Production environment url.'
-        type: string
-        required: true
-      CLIENT_ID: 
-        description: 'The client id'
-        type: string
-        required: true
-      TENANT_ID: 
-        description: 'The tenant id'
-        type: string
-        required: true
+      
     
 env:
 #edit your values here
