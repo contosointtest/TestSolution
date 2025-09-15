@@ -48,7 +48,7 @@ jobs:
     - name: Debug files
       run: |
         echo "Workspace: $GITHUB_WORKSPACE"
-        ls -R TestSolution/solutions/Test
+        ls -R $GITHUB_WORKSPACE
 
     - name: Import solution to prod env
       uses: microsoft/powerplatform-actions/import-solution@v1
