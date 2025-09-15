@@ -1,1 +1,88 @@
+name: release-deployment-settings
+# Export solution from DEV environment
+#  unpack it and prepare, commit and push a git branch with the changes
 
+on:
+  workflow_dispatch:
+    inputs:
+      #Do Not change these values
+      #Values are set by the caller
+      #caller sample: release-action-call.ymnl
+      solution_name:
+        description: 'The solution name.'
+        type: string
+        default: ALMLab       
+      solution_shipping_folder:
+        description: 'folder name for staging the exported solution *do not change*'        
+        type: string
+        default: out/ship/
+      solution_outbound_folder:
+        description: 'staging the unpacked solution folder before check-in *do not change*'
+        type: string
+        default: out/solutions/
+      solution_source_folder: 
+       description: 'folder name to be created and checked in *do not change*'
+       type: string
+       default: solutions/
+      solution_release_folder:
+       description: 'folder where the released binaries are going to be hosted *do not change*'
+       type: string
+       default: TestSolution/solutions/Test
+      BUILD_ENVIRONMENT_URL:
+        description: 'Build environment url.'
+        type: string
+        required: true      
+      PRODUCTION_ENVIRONMENT_URL: 
+        description: 'Production environment url.'
+        type: string
+        required: true
+      CLIENT_ID: 
+        description: 'The client id'
+        type: string
+        required: true
+      TENANT_ID: 
+        description: 'The tenant id'
+        type: string
+        required: true
+    
+env:
+#edit your values here
+  PRODUCTION_ENVIRONMENT_URL: 'https://org917f155b.crm.dynamics.com'
+  CLIENT_ID: 'cce7ff3a-a155-46fd-944a-07df4e69c036'
+  TENANT_ID: '56ca820a-1a59-428f-b459-186cbb56608b'
+permissions:
+  contents: write
+jobs:
+  release-test-deployment-settings:
+    runs-on: windows-latest
+    # or you can say runs-on: ubuntu-latest
+    env:
+      RUNNER_DEBUG: 1
+
+    steps:
+        
+    - name: Install Power Platform Tools
+      uses: microsoft/powerplatform-actions/actions-install@v1
+
+    - name: who-am-i action
+      uses: microsoft/powerplatform-actions/who-am-i@v1
+      with:
+        environment-url: ${{env.PRODUCTION_ENVIRONMENT_URL}}
+        app-id: ${{env.CLIENT_ID}}
+        client-secret: ${{ secrets.PowerPlatformSPN }}
+        tenant-id: ${{env.TENANT_ID}}
+
+    - name: Import solution to prod env
+      uses: microsoft/powerplatform-actions/import-solution@v1
+      with:
+        environment-url: ${{env.PRODUCTION_ENVIRONMENT_URL}}
+        app-id: ${{env.CLIENT_ID}}
+        client-secret: ${{ secrets.PowerPlatformSPN }}
+        tenant-id: ${{env.TENANT_ID}}
+        solution-file: ${{ inputs.solution_release_folder}}/${{ github.event.inputs.solution_name }}_managed.zip
+        UseDeploymentSettingsFile: true
+        deployment-settings-file: ${{ inputs.solution_release_folder}}/DeploymentSettings.json
+        force-overwrite: true
+        publish-changes: true
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        allow-empty-commit: true
