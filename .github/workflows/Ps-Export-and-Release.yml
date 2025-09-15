@@ -45,6 +45,9 @@ jobs:
         client-secret: ${{ secrets.PowerPlatformSPN }}
         tenant-id: ${{env.TENANT_ID}}
         
+    - name: Checkout repository
+      uses: actions/checkout@v4
+        
     - name: Debug files
       run: |
         echo "Workspace: $GITHUB_WORKSPACE"
