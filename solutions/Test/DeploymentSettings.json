@@ -2,7 +2,7 @@
   "EnvironmentVariables": [
     {
       "SchemaName": "mic_TestEnv",
-      "Value": "MTest1Val",
+      "Value": "UAT",
       "Name": {
         "Default": "TestEnv",
         "ByLcid": {
@@ -16,8 +16,13 @@
   "ConnectionReferences": [
     {
       "LogicalName": "mic_DataverseSPN",
-      "ConnectionId": "shared-commondataservice-3c5e482683694a72bce8ef4a60115d88",
+      "ConnectionId": "3c5e482683694a72bce8ef4a60115d88",
       "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_commondataservice"
+    },
+    {
+      "LogicalName": "mic_sharedcommondataserviceforapps_3fced",
+      "ConnectionId": "3c5e482683694a72bce8ef4a60115d88",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
     }
   ]
 }
