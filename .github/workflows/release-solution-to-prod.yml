@@ -110,10 +110,18 @@ jobs:
       run: |
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
-        git checkout main          # ensure we’re on a branch
+        git checkout main
+    
+        # Stage files
         git add solutions/Test/
-        git commit -m "Export managed solution from Dev"
-        git push
+    
+        # Only commit if there are changes
+        git diff --cached --quiet || git commit -m "Export managed solution from Dev"
+    
+        # Sync with remote before push
+        git pull --rebase origin main
+        git push origin main
+
 
   release-to-staging:
     needs: [ convert-to-managed ]
