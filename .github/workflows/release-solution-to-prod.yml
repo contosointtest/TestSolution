@@ -104,23 +104,40 @@ jobs:
         fetch-depth: 0             # fetch full history so you can push
         ref: main                  # or the branch you want to commit to
         token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Move exported files into repo folder
+      run: |
+        mkdir -p solutions/Test
+        cp out/*.zip solutions/Test/ || move out\*.zip solutions\Test\   # Linux or Windows
+        cp out/*.json solutions/Test/ || move out\*.json solutions\Test\
 
-    # 6. Commit and push files back to repository
     - name: Commit managed solution
       run: |
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
         git checkout main
-    
-        # Stage files
-        git add solutions/Test/
-    
-        # Only commit if there are changes
-        git diff --cached --quiet || git commit -m "Export managed solution from Dev"
-    
-        # Sync with remote before push
         git pull --rebase origin main
+    
+        git add solutions/Test/
+        git diff --cached --quiet || git commit -m "Export managed solution from Dev"
         git push origin main
+      
+    # 6. Commit and push files back to repository
+    # - name: Commit managed solution
+    #   run: |
+    #     git config user.name "github-actions"
+    #     git config user.email "github-actions@github.com"
+    #     git checkout main
+    
+    #     # Stage files
+    #     git add solutions/Test/
+    
+    #     # Only commit if there are changes
+    #     git diff --cached --quiet || git commit -m "Export managed solution from Dev"
+    
+    #     # Sync with remote before push
+    #     git pull --rebase origin main
+    #     git push origin main
 
 
   release-to-staging:
