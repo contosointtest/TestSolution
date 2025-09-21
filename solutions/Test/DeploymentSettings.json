@@ -16,7 +16,7 @@
   "ConnectionReferences": [    
     {
       "LogicalName": "mic_sharedcommondataserviceforapps_3fced",
-      "ConnectionId": "3c5e482683694a72bce8ef4a60115d88",
+      "ConnectionId": "shared_commondataserviceforapps_3c5e482683694a72bce8ef4a60115d88",
       "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
     }
   ]
