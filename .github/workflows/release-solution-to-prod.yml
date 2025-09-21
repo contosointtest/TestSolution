@@ -27,7 +27,8 @@ on:
       solution_release_folder:
        description: 'folder where the released binaries are going to be hosted *do not change*'
        type: string
-       default: out/release
+       default: solutions/Test
+       #default: out/release
       BUILD_ENVIRONMENT_URL:
         description: 'Build environment url.'
         type: string
