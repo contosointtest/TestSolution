@@ -19,7 +19,7 @@ on:
       solution_file:
         description: 'Solution zip file name'
         required: true
-        default: Test_1_0_0_1_managed.zip
+        default: Test_1_0_0_2_managed.zip
       
     
 env:
@@ -69,5 +69,3 @@ jobs:
         deployment-settings-file: ${{ inputs.solution_release_folder }}/DeploymentSettings.json
         force-overwrite: true
         publish-changes: true
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        allow-empty-commit: true
