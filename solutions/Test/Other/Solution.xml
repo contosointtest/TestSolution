@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ImportExportXml version="9.2.25091.130" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.25091.130" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.25092.00135">
+<ImportExportXml version="9.2.25092.135" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.25092.135" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.25093.00133">
   <SolutionManifest>
     <UniqueName>Test</UniqueName>
     <LocalizedNames>
       <LocalizedName description="Test" languagecode="1033" />
     </LocalizedNames>
     <Descriptions />
-    <Version>1.0.0.1</Version>
+    <Version>1.0.0.2</Version>
     <Managed>0</Managed>
     <Publisher>
       <UniqueName>Micron</UniqueName>
