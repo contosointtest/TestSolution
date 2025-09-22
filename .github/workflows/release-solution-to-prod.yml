@@ -168,7 +168,7 @@ jobs:
         client-secret: ${{ secrets.envSecret }}
         tenant-id: ${{inputs.TENANT_ID}}
         solution-file: ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}_managed.zip
-        UseDeploymentSettingsFile: true
+        use-deployment-settings-file: true
         deployment-settings-file: ${{ inputs.solution_release_folder}}/DeploymentSettings.json
         force-overwrite: true
         publish-changes: true
