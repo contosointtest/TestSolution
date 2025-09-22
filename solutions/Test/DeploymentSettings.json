@@ -2,7 +2,7 @@
   "EnvironmentVariables": [
     {
       "SchemaName": "mic_TestEnv",
-      "Value": "UAT",
+      "Value": "UATTest5",
       "Name": {
         "Default": "TestEnv",
         "ByLcid": {
