@@ -56,16 +56,25 @@ jobs:
       run: |
         echo "Workspace: $GITHUB_WORKSPACE"
         ls -R $GITHUB_WORKSPACE
+    - name: Ensure required connections exist
+      shell: pwsh
+      run: |
+        .\pipelines\Ensure-Connections.ps1 `
+          -EnvironmentUrl '${{ env.PRODUCTION_ENVIRONMENT_URL }}' `
+          -TenantId '${{ env.TENANT_ID }}' `
+          -ClientId '${{ env.CLIENT_ID }}' `
+          -ClientSecret '${{ secrets.PowerPlatformSPN }}' `
+          -DeploymentSettingsPath '.\pipelines\deploymentSettings.json'
 
-    - name: Import solution to prod env
-      uses: microsoft/powerplatform-actions/import-solution@v1
-      with:
-        environment-url: ${{env.PRODUCTION_ENVIRONMENT_URL}}
-        app-id: ${{env.CLIENT_ID}}
-        client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{env.TENANT_ID}}
-        solution-file: ${{ inputs.solution_release_folder }}/${{ inputs.solution_file }}
-        use-deployment-settings-file: true
-        deployment-settings-file: ${{ inputs.solution_release_folder }}/DeploymentSettings.json
-        force-overwrite: true
-        publish-changes: true
+    # - name: Import solution to prod env
+    #   uses: microsoft/powerplatform-actions/import-solution@v1
+    #   with:
+    #     environment-url: ${{env.PRODUCTION_ENVIRONMENT_URL}}
+    #     app-id: ${{env.CLIENT_ID}}
+    #     client-secret: ${{ secrets.PowerPlatformSPN }}
+    #     tenant-id: ${{env.TENANT_ID}}
+    #     solution-file: ${{ inputs.solution_release_folder }}/${{ inputs.solution_file }}
+    #     use-deployment-settings-file: true
+    #     deployment-settings-file: ${{ inputs.solution_release_folder }}/DeploymentSettings.json
+    #     force-overwrite: true
+    #     publish-changes: true
