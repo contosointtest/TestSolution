@@ -1,1 +1,15 @@
+{
+  "ConnectionReferences": [
+    {
+      "LogicalName": "new_dataverse_connectionreference",
+      "ConnectionId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps/connections/dataverse-sp-connection",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+    },
+    {
+      "LogicalName": "new_sharepoint_connectionreference",
+      "ConnectionId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline/connections/sharepoint-sp-connection",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+    }
+  ]
+}
 
