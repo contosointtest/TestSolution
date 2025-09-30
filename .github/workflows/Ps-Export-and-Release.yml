@@ -70,7 +70,7 @@ jobs:
 
   approve-prod:
     runs-on: windows-latest
-    needs: deploy-to-prod
+    needs: release-test-deployment-settings
     steps:
       - name: Wait for approval
         uses: peter-evans/wait-for-approval@v3
